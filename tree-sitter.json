@@ -1,0 +1,40 @@
+{
+  "$schema": "https://tree-sitter.github.io/tree-sitter/assets/schemas/config.schema.json",
+  "grammars": [
+    {
+      "name": "algorithmic_notation_itb",
+      "camelcase": "AlgorithmicNotationItb",
+      "title": "ITB's Algorithmic Notation",
+      "scope": "source.algorithmic_notation_itb",
+      "file-types": ["algn"],
+      "injection-regex": "^algorithmic_notation_itb$",
+      "class-name": "TreeSitterAlgorithmicNotationItb",
+      "highlights": "queries/highlights.scm"
+    }
+  ],
+  "metadata": {
+    "version": "0.1.0",
+    "license": "MIT",
+    "description": "This is an implementation of the algorithmic notation grammar taught in ITB's Algorithms and Programming class.",
+    "authors": [
+      {
+        "name": "EnnEffDee",
+        "url": ""
+      }
+    ],
+    "links": {
+      "repository": "https://github.com/tree-sitter/tree-sitter-algorithmic_notation_itb",
+      "funding": ""
+    }
+  },
+  "bindings": {
+    "c": true,
+    "go": false,
+    "java": false,
+    "node": true,
+    "python": false,
+    "rust": true,
+    "swift": false,
+    "zig": false
+  }
+}

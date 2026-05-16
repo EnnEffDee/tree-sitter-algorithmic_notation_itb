@@ -1,0 +1,10 @@
+PROGRAM this is my program hahaha
+{ Specification: prints "Hello, world!" and a number }
+
+DICTIONARY
+s : integer
+
+MAIN ALGORITHM
+input(s)
+s <- s * s
+output(s)

@@ -1,87 +1,86 @@
 #include "tree_sitter/parser.h"
-#include <stdbool.h>
 #include <stdlib.h>
 #include <string.h>
-#include <wctype.h>
 
-#define MAX_INDENT_STACK 1024
+#define MAX_INDENT_STACK 512
 
-enum TokenType { INDENT, DEDENT, NEWLINE };
+enum TokenType { INDENT, DEDENT };
 
 typedef struct {
     uint16_t indents[MAX_INDENT_STACK];
     uint16_t length;
 } IndentStack;
 
-void *tree_sitter_algorithmic_notation_external_scanner_create() {
+void *tree_sitter_algorithmic_notation_itb_external_scanner_create() {
     IndentStack *stack = malloc(sizeof(IndentStack));
-    if (stack) {
+    if (stack != NULL) {
         stack->indents[0] = 0;
         stack->length = 1;
     }
     return stack;
 }
 
-void tree_sitter_algorithmic_notation_external_scanner_destroy(void *payload) {
+void tree_sitter_algorithmic_notation_itb_external_scanner_destroy(
+    void *payload) {
     free(payload);
 }
 
 unsigned
-tree_sitter_algorithmic_notation_external_scanner_serialize(void *payload,
-                                                            char *buffer) {
+tree_sitter_algorithmic_notation_itb_external_scanner_serialize(void *payload,
+                                                                char *buffer) {
     IndentStack *stack = (IndentStack *)payload;
-    uint16_t bytes = stack->length * sizeof(uint16_t);
-    if (bytes < TREE_SITTER_SERIALIZATION_BUFFER_SIZE) {
-        memcpy(buffer, stack->indents, bytes);
-        return bytes;
+    unsigned size = stack->length * sizeof(uint16_t);
+    if (size <= TREE_SITTER_SERIALIZATION_BUFFER_SIZE) {
+        memcpy(buffer, stack->indents, size);
+        return size;
     }
     return 0;
 }
 
-void tree_sitter_algorithmic_notation_external_scanner_deserialize(
+void tree_sitter_algorithmic_notation_itb_external_scanner_deserialize(
     void *payload, const char *buffer, unsigned length) {
     IndentStack *stack = (IndentStack *)payload;
     if (length > 0) {
-        memcpy(stack->indents, buffer, length);
         stack->length = length / sizeof(uint16_t);
+        memcpy(stack->indents, buffer, length);
     } else {
         stack->indents[0] = 0;
         stack->length = 1;
     }
 }
 
-bool tree_sitter_algorithmic_notation_external_scanner_scan(
+bool tree_sitter_algorithmic_notation_itb_external_scanner_scan(
     void *payload, TSLexer *lexer, const bool *valid_symbols) {
     IndentStack *stack = (IndentStack *)payload;
 
-    // 1. Consume a structural newline if the parser expects one
-    if (valid_symbols[NEWLINE] && lexer->lookahead == '\n') {
-        lexer->advance(lexer, false);
-
-        while (lexer->lookahead == '\n' || lexer->lookahead == '\r') {
-            lexer->advance(lexer, false);
-        }
-
-        lexer->result_symbol = NEWLINE;
-        return true;
-    }
-
-    // 2. Skip inline horizontal spaces and tabs to find content
+    // Skip horizontal inline spacing
     while (lexer->lookahead == ' ' || lexer->lookahead == '\t') {
         lexer->advance(lexer, true);
     }
 
-    // 3. Ignore empty lines, pure carriage returns, or starting comments
-    // so they don't break our depth metrics
-    if (lexer->lookahead == '\n' || lexer->lookahead == '\r' ||
-        lexer->lookahead == '{') {
+    // Skip over comments completely
+    if (lexer->lookahead == '{') {
+        lexer->advance(lexer, false);
+        while (lexer->lookahead != '}' && lexer->lookahead != 0) {
+            lexer->advance(lexer, false);
+        }
+        if (lexer->lookahead == '}') {
+            lexer->advance(lexer, false);
+        }
+        while (lexer->lookahead == ' ' || lexer->lookahead == '\t') {
+            lexer->advance(lexer, true);
+        }
+    }
+
+    // If we are staring directly at a line-break sequence, skip evaluating
+    // block modifications
+    if (lexer->lookahead == '\n' || lexer->lookahead == '\r') {
         return false;
     }
 
-    // 4. Calculate current line prefix column offset
     uint16_t current_indent = lexer->get_column(lexer);
 
-    // 5. Evaluate Indents
+    // Evaluate Indent Scope
     if (valid_symbols[INDENT] &&
         current_indent > stack->indents[stack->length - 1]) {
         if (stack->length < MAX_INDENT_STACK) {
@@ -91,7 +90,7 @@ bool tree_sitter_algorithmic_notation_external_scanner_scan(
         }
     }
 
-    // 6. Evaluate Dedents
+    // Evaluate Dedent Scope
     if (valid_symbols[DEDENT] &&
         current_indent < stack->indents[stack->length - 1]) {
         stack->length--;

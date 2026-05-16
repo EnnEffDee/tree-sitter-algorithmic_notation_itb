@@ -8,11 +8,11 @@
 // @ts-check
 
 export default grammar({
-  name: "algorithmic_notation",
+  name: "algorithmic_notation_itb",
 
-  extras: ($) => [/[ \t\r]/, $.comment, $._newline],
+  extras: ($) => [/[ \t]/, $.comment, $._newline],
 
-  externals: ($) => [$._indent, $._dedent, $._newline],
+  externals: ($) => [$._indent, $._dedent],
 
   conflicts: ($) => [],
 
@@ -43,17 +43,19 @@ export default grammar({
         $.procedure_definition,
       ),
 
-    variable_declaration: ($) =>
-      seq(commaSep1($.identifier), ":", $._type, $._newline),
+    // Standard standalone declarations demand a newline at the end
+    variable_declaration: ($) => seq($._field_definition, $._newline),
 
+    // Reusable inline core definitions without trailing newlines
+    _field_definition: ($) => seq(commaSep1($.identifier), ":", $._type),
+
+    // Fixed to match: constant MAX_CAPACITY = 100
     constant_declaration: ($) =>
       seq(
         "constant",
         $.identifier,
-        ":",
-        $._type,
         "=",
-        $.expression,
+        choice($.number, $.identifier),
         $._newline,
       ),
 
@@ -62,9 +64,7 @@ export default grammar({
         "type",
         $.identifier,
         ":",
-        "<",
-        commaSep1($.variable_declaration),
-        ">",
+        choice(seq("<", commaSep1($._field_definition), ">"), $._type),
         $._newline,
       ),
 
@@ -94,12 +94,14 @@ export default grammar({
         $._dedent,
       ),
 
-    parameter_list: ($) => seq("(", commaSep($.variable_declaration), ")"),
+    // FIX: Changed from variable_declaration to _field_definition
+    parameter_list: ($) => seq("(", commaSep($._field_definition), ")"),
 
+    // FIX: Changed from variable_declaration to _field_definition
     parameter_list_io: ($) =>
       seq(
         "(",
-        commaSep(seq(choice("input", "output"), $.variable_declaration)),
+        commaSep(seq(choice("input", "output"), $._field_definition)),
         ")",
       ),
 
@@ -136,34 +138,60 @@ export default grammar({
         $._newline,
       ),
 
-    assignment_statement: ($) => seq($.identifier, "<-", $.expression),
+    assignment_statement: ($) => seq($.variable_access, "<-", $.expression),
 
     call_statement: ($) => seq($.identifier, "(", commaSep($.expression), ")"),
 
     return_statement: ($) => seq("->", $.expression),
 
     expression: ($) =>
-      choice($.identifier, $.number, $.call_statement, $.binary_expression),
+      choice(
+        $.variable_access,
+        $.number,
+        $.call_statement,
+        $.binary_expression,
+      ),
 
     binary_expression: ($) =>
       choice(
+        prec.left(2, seq($.expression, "*", $.expression)),
+        prec.left(2, seq($.expression, "/", $.expression)),
         prec.left(1, seq($.expression, "+", $.expression)),
         prec.left(1, seq($.expression, "-", $.expression)),
-        prec.left(1, seq($.expression, "*", $.expression)),
-        prec.left(1, seq($.expression, "/", $.expression)),
       ),
 
-    function_call: ($) => seq($.identifier, "(", commaSep($.expression), ")"),
-    _type: ($) => choice("boolean", "integer", "real", "character", "string"),
+    _type: ($) =>
+      choice(
+        "boolean",
+        "integer",
+        "real",
+        "character",
+        "string",
+        $.identifier,
+        $.array_type,
+      ),
+
+    variable_access: ($) =>
+      choice(
+        $.identifier,
+        prec.left(3, seq($.variable_access, ".", $.identifier)),
+        prec.left(3, seq($.variable_access, "[", $.expression, "]")),
+      ),
+
+    array_type: ($) =>
+      seq("array", "[", $.expression, "..", $.expression, "]", "of", $._type),
+
+    _newline: ($) => /[\r\n]+/,
     identifier: ($) => /[a-zA-Z_][a-zA-Z0-9_]*/,
     number: ($) => /\d+/,
-    comment: ($) => /\{[^*]*\}/,
+    comment: ($) => /\{[^\}]*\}/,
   },
 });
 
 function commaSep(rule) {
   return optional(commaSep1(rule));
 }
+
 function commaSep1(rule) {
   return seq(rule, repeat(seq(",", rule)));
 }

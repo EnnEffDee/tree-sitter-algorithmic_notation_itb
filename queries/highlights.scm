@@ -1,4 +1,4 @@
-; Keywords matched safely using standard query alternations
+; Headers/Sections
 (program_title "PROGRAM" @keyword)
 (program_title "Program" @keyword)
 
@@ -13,15 +13,17 @@
 (algorithm_block "ALGORITHM" @keyword)
 (algorithm_block "Algorithm" @keyword)
 
-; Individual statement keywords
+; Statement keywords
 "function" @keyword
 "procedure" @keyword
 "constant" @keyword
 "type" @keyword
 "input" @keyword
 "output" @keyword
+"array" @keyword
+"of" @keyword
 
-; Built-in Types (if your grammar handles types as anonymous tokens)
+; Built-in Types
 "boolean" @type
 "integer" @type
 "real" @type
@@ -35,15 +37,22 @@
 "-" @operator
 "*" @operator
 "/" @operator
+".." @operator
 ":" @punctuation.delimiter
 "," @punctuation.delimiter
+"." @punctuation.delimiter
+"[" @punctuation.bracket
+"]" @punctuation.bracket
 
 ; Literals
 (number) @number
 (comment) @comment
 
 ; Identifiers and Node captures
-(program_name) @title
+(program_name) @markup.heading
+
+(type_definition
+  (identifier) @type)
 
 (function_definition
   (identifier) @function)
@@ -53,10 +62,14 @@
 
 (call_statement
   (identifier) @keyword.function
-  (#any-of? @keyword.function "input" "output" "print" "read"))
+  (#any-of? @keyword.function "input" "output"))
 
 (call_statement
   (identifier) @function.call)
 
-; Catch-all rule for basic variable text
+(variable_access
+  (variable_access)
+  "."
+  (identifier) @property)
+
 (identifier) @variable

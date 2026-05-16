@@ -3,8 +3,17 @@ PROGRAM this is my program hahaha
 
 DICTIONARY
 s : integer
+constant MAX_CAPACITY = 100
+type my_array : array [0..3] of integer
+arraya : array [0..3] of integer
+type time : < buffer : my_array,
+              size : integer >
+
+{ type time : < buffer : array [0..MAX_CAPACITY-1],
+                hello : integer > 
+
+make this also work }
 
 MAIN ALGORITHM
-input(s)
-s <- s * s
-output(s)
+{ Typical operations with an array }
+array[i] <- 1

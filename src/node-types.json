@@ -80,6 +80,11 @@
     }
   },
   {
+    "type": "boolean",
+    "named": true,
+    "fields": {}
+  },
+  {
     "type": "call_statement",
     "named": true,
     "fields": {},
@@ -107,11 +112,15 @@
       "required": true,
       "types": [
         {
-          "type": "identifier",
+          "type": "array_type",
           "named": true
         },
         {
-          "type": "number",
+          "type": "expression",
+          "named": true
+        },
+        {
+          "type": "identifier",
           "named": true
         }
       ]
@@ -161,11 +170,23 @@
           "named": true
         },
         {
+          "type": "boolean",
+          "named": true
+        },
+        {
           "type": "call_statement",
           "named": true
         },
         {
+          "type": "character",
+          "named": true
+        },
+        {
           "type": "number",
+          "named": true
+        },
+        {
+          "type": "string",
           "named": true
         },
         {
@@ -485,35 +506,55 @@
     "named": false
   },
   {
-    "type": "ALGORITHM",
+    "type": "ALGORITMA",
     "named": false
   },
   {
-    "type": "Algorithm",
+    "type": "ALGORITMA UTAMA",
     "named": false
   },
   {
-    "type": "DICTIONARY",
+    "type": "Algoritma",
     "named": false
   },
   {
-    "type": "Dictionary",
+    "type": "Algoritma Utama",
     "named": false
   },
   {
-    "type": "LOCAL DICTIONARY",
+    "type": "Boolean",
     "named": false
   },
   {
-    "type": "Local Dictionary",
+    "type": "Character",
     "named": false
   },
   {
-    "type": "MAIN ALGORITHM",
+    "type": "FALSE",
     "named": false
   },
   {
-    "type": "Main Algorithm",
+    "type": "False",
+    "named": false
+  },
+  {
+    "type": "Integer",
+    "named": false
+  },
+  {
+    "type": "KAMUS",
+    "named": false
+  },
+  {
+    "type": "KAMUS LOKAL",
+    "named": false
+  },
+  {
+    "type": "Kamus",
+    "named": false
+  },
+  {
+    "type": "Kamus Lokal",
     "named": false
   },
   {
@@ -522,6 +563,22 @@
   },
   {
     "type": "Program",
+    "named": false
+  },
+  {
+    "type": "Real",
+    "named": false
+  },
+  {
+    "type": "String",
+    "named": false
+  },
+  {
+    "type": "TRUE",
+    "named": false
+  },
+  {
+    "type": "True",
     "named": false
   },
   {
@@ -545,12 +602,20 @@
     "named": false
   },
   {
+    "type": "character",
+    "named": true
+  },
+  {
     "type": "comment",
     "named": true,
     "extra": true
   },
   {
     "type": "constant",
+    "named": false
+  },
+  {
+    "type": "false",
     "named": false
   },
   {
@@ -595,6 +660,14 @@
   },
   {
     "type": "string",
+    "named": false
+  },
+  {
+    "type": "string",
+    "named": true
+  },
+  {
+    "type": "true",
     "named": false
   },
   {

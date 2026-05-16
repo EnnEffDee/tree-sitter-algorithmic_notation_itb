@@ -2,16 +2,16 @@
 (program_title "PROGRAM" @keyword)
 (program_title "Program" @keyword)
 
-(dictionary "DICTIONARY" @keyword)
-(dictionary "Dictionary" @keyword)
+(dictionary "KAMUS" @keyword)
+(dictionary "Kamus" @keyword)
 
-(main_algorithm "MAIN ALGORITHM" @keyword)
-(main_algorithm "Main Algorithm" @keyword)
-(main_algorithm "ALGORITHM" @keyword)
-(main_algorithm "Algorithm" @keyword)
+(main_algorithm "ALGORITMA UTAMA" @keyword)
+(main_algorithm "Algoritma Utama" @keyword)
+(main_algorithm "ALGORITMA" @keyword)
+(main_algorithm "Algoritma" @keyword)
 
-(algorithm_block "ALGORITHM" @keyword)
-(algorithm_block "Algorithm" @keyword)
+(algorithm_block "ALGORITMA" @keyword)
+(algorithm_block "Algoritma" @keyword)
 
 ; Statement keywords
 "function" @keyword
@@ -46,6 +46,9 @@
 
 ; Literals
 (number) @number
+(boolean) @boolean
+(string) @string
+(character) @character
 (comment) @comment
 
 ; Identifiers and Node captures

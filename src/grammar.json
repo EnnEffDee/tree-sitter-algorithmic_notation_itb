@@ -65,11 +65,11 @@
           "members": [
             {
               "type": "STRING",
-              "value": "DICTIONARY"
+              "value": "KAMUS"
             },
             {
               "type": "STRING",
-              "value": "Dictionary"
+              "value": "Kamus"
             }
           ]
         },
@@ -199,20 +199,19 @@
         },
         {
           "type": "STRING",
+          "value": ":"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "_type"
+        },
+        {
+          "type": "STRING",
           "value": "="
         },
         {
-          "type": "CHOICE",
-          "members": [
-            {
-              "type": "SYMBOL",
-              "name": "number"
-            },
-            {
-              "type": "SYMBOL",
-              "name": "identifier"
-            }
-          ]
+          "type": "SYMBOL",
+          "name": "expression"
         },
         {
           "type": "SYMBOL",
@@ -316,10 +315,6 @@
           "name": "_newline"
         },
         {
-          "type": "SYMBOL",
-          "name": "_indent"
-        },
-        {
           "type": "CHOICE",
           "members": [
             {
@@ -334,10 +329,6 @@
         {
           "type": "SYMBOL",
           "name": "algorithm_block"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "_dedent"
         }
       ]
     },
@@ -361,10 +352,6 @@
           "name": "_newline"
         },
         {
-          "type": "SYMBOL",
-          "name": "_indent"
-        },
-        {
           "type": "CHOICE",
           "members": [
             {
@@ -379,10 +366,6 @@
         {
           "type": "SYMBOL",
           "name": "algorithm_block"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "_dedent"
         }
       ]
     },
@@ -522,11 +505,11 @@
           "members": [
             {
               "type": "STRING",
-              "value": "LOCAL DICTIONARY"
+              "value": "KAMUS LOKAL"
             },
             {
               "type": "STRING",
-              "value": "Local Dictionary"
+              "value": "Kamus Lokal"
             }
           ]
         },
@@ -559,11 +542,11 @@
           "members": [
             {
               "type": "STRING",
-              "value": "ALGORITHM"
+              "value": "ALGORITMA"
             },
             {
               "type": "STRING",
-              "value": "Algorithm"
+              "value": "Algoritma"
             }
           ]
         },
@@ -596,19 +579,19 @@
           "members": [
             {
               "type": "STRING",
-              "value": "MAIN ALGORITHM"
+              "value": "ALGORITMA UTAMA"
             },
             {
               "type": "STRING",
-              "value": "Main Algorithm"
+              "value": "Algoritma Utama"
             },
             {
               "type": "STRING",
-              "value": "Algorithm"
+              "value": "ALGORITMA"
             },
             {
               "type": "STRING",
-              "value": "ALGORITHM"
+              "value": "Algoritma"
             }
           ]
         },
@@ -768,6 +751,18 @@
         },
         {
           "type": "SYMBOL",
+          "name": "boolean"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "character"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "string"
+        },
+        {
+          "type": "SYMBOL",
           "name": "call_statement"
         },
         {
@@ -870,11 +865,11 @@
       "members": [
         {
           "type": "STRING",
-          "value": "boolean"
+          "value": "integer"
         },
         {
           "type": "STRING",
-          "value": "integer"
+          "value": "Integer"
         },
         {
           "type": "STRING",
@@ -882,11 +877,31 @@
         },
         {
           "type": "STRING",
+          "value": "Real"
+        },
+        {
+          "type": "STRING",
+          "value": "boolean"
+        },
+        {
+          "type": "STRING",
+          "value": "Boolean"
+        },
+        {
+          "type": "STRING",
           "value": "character"
         },
         {
           "type": "STRING",
+          "value": "Character"
+        },
+        {
+          "type": "STRING",
           "value": "string"
+        },
+        {
+          "type": "STRING",
+          "value": "String"
         },
         {
           "type": "SYMBOL",
@@ -1000,7 +1015,44 @@
     },
     "number": {
       "type": "PATTERN",
-      "value": "\\d+"
+      "value": "-?\\d+(?:\\.\\d+)?"
+    },
+    "boolean": {
+      "type": "CHOICE",
+      "members": [
+        {
+          "type": "STRING",
+          "value": "TRUE"
+        },
+        {
+          "type": "STRING",
+          "value": "True"
+        },
+        {
+          "type": "STRING",
+          "value": "true"
+        },
+        {
+          "type": "STRING",
+          "value": "FALSE"
+        },
+        {
+          "type": "STRING",
+          "value": "False"
+        },
+        {
+          "type": "STRING",
+          "value": "false"
+        }
+      ]
+    },
+    "string": {
+      "type": "PATTERN",
+      "value": "\"[^\"\\\\]*(?:\\\\.[^\"\\\\]*)*\""
+    },
+    "character": {
+      "type": "PATTERN",
+      "value": "'[^'\\\\]*(?:\\\\.[^'\\\\]*)*'"
     },
     "comment": {
       "type": "PATTERN",

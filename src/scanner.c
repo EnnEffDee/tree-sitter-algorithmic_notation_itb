@@ -53,12 +53,10 @@ bool tree_sitter_algorithmic_notation_itb_external_scanner_scan(
     void *payload, TSLexer *lexer, const bool *valid_symbols) {
     IndentStack *stack = (IndentStack *)payload;
 
-    // Skip horizontal inline spacing
     while (lexer->lookahead == ' ' || lexer->lookahead == '\t') {
         lexer->advance(lexer, true);
     }
 
-    // Skip over comments completely
     if (lexer->lookahead == '{') {
         lexer->advance(lexer, false);
         while (lexer->lookahead != '}' && lexer->lookahead != 0) {
@@ -72,15 +70,12 @@ bool tree_sitter_algorithmic_notation_itb_external_scanner_scan(
         }
     }
 
-    // If we are staring directly at a line-break sequence, skip evaluating
-    // block modifications
     if (lexer->lookahead == '\n' || lexer->lookahead == '\r') {
         return false;
     }
 
     uint16_t current_indent = lexer->get_column(lexer);
 
-    // Evaluate Indent Scope
     if (valid_symbols[INDENT] &&
         current_indent > stack->indents[stack->length - 1]) {
         if (stack->length < MAX_INDENT_STACK) {
@@ -90,7 +85,6 @@ bool tree_sitter_algorithmic_notation_itb_external_scanner_scan(
         }
     }
 
-    // Evaluate Dedent Scope
     if (valid_symbols[DEDENT] &&
         current_indent < stack->indents[stack->length - 1]) {
         stack->length--;

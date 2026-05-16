@@ -27,7 +27,7 @@ export default grammar({
 
     dictionary: ($) =>
       seq(
-        choice("DICTIONARY", "Dictionary"),
+        choice("KAMUS", "Kamus"),
         $._newline,
         optional($._indent),
         repeat($._dictionary_item),
@@ -43,19 +43,18 @@ export default grammar({
         $.procedure_definition,
       ),
 
-    // Standard standalone declarations demand a newline at the end
     variable_declaration: ($) => seq($._field_definition, $._newline),
 
-    // Reusable inline core definitions without trailing newlines
     _field_definition: ($) => seq(commaSep1($.identifier), ":", $._type),
 
-    // Fixed to match: constant MAX_CAPACITY = 100
     constant_declaration: ($) =>
       seq(
         "constant",
         $.identifier,
+        ":",
+        $._type,
         "=",
-        choice($.number, $.identifier),
+        $.expression,
         $._newline,
       ),
 
@@ -76,10 +75,8 @@ export default grammar({
         "->",
         $._type,
         $._newline,
-        $._indent,
         optional($.local_dictionary),
         $.algorithm_block,
-        $._dedent,
       ),
 
     procedure_definition: ($) =>
@@ -88,16 +85,12 @@ export default grammar({
         $.identifier,
         $.parameter_list_io,
         $._newline,
-        $._indent,
         optional($.local_dictionary),
         $.algorithm_block,
-        $._dedent,
       ),
 
-    // FIX: Changed from variable_declaration to _field_definition
     parameter_list: ($) => seq("(", commaSep($._field_definition), ")"),
 
-    // FIX: Changed from variable_declaration to _field_definition
     parameter_list_io: ($) =>
       seq(
         "(",
@@ -107,7 +100,7 @@ export default grammar({
 
     local_dictionary: ($) =>
       seq(
-        choice("LOCAL DICTIONARY", "Local Dictionary"),
+        choice("KAMUS LOKAL", "Kamus Lokal"),
         $._newline,
         $._indent,
         repeat1($.variable_declaration),
@@ -116,7 +109,7 @@ export default grammar({
 
     algorithm_block: ($) =>
       seq(
-        choice("ALGORITHM", "Algorithm"),
+        choice("ALGORITMA", "Algoritma"),
         $._newline,
         $._indent,
         repeat1($._statement),
@@ -125,7 +118,7 @@ export default grammar({
 
     main_algorithm: ($) =>
       seq(
-        choice("MAIN ALGORITHM", "Main Algorithm", "Algorithm", "ALGORITHM"),
+        choice("ALGORITMA UTAMA", "Algoritma Utama", "ALGORITMA", "Algoritma"),
         $._newline,
         optional($._indent),
         repeat1($._statement),
@@ -148,6 +141,9 @@ export default grammar({
       choice(
         $.variable_access,
         $.number,
+        $.boolean,
+        $.character,
+        $.string,
         $.call_statement,
         $.binary_expression,
       ),
@@ -162,11 +158,16 @@ export default grammar({
 
     _type: ($) =>
       choice(
-        "boolean",
         "integer",
+        "Integer",
         "real",
+        "Real",
+        "boolean",
+        "Boolean",
         "character",
+        "Character",
         "string",
+        "String",
         $.identifier,
         $.array_type,
       ),
@@ -183,7 +184,10 @@ export default grammar({
 
     _newline: ($) => /[\r\n]+/,
     identifier: ($) => /[a-zA-Z_][a-zA-Z0-9_]*/,
-    number: ($) => /\d+/,
+    number: ($) => /-?\d+(?:\.\d+)?/,
+    boolean: ($) => choice("TRUE", "True", "true", "FALSE", "False", "false"),
+    string: ($) => /"[^"\\]*(?:\\.[^"\\]*)*"/,
+    character: ($) => /'[^'\\]*(?:\\.[^'\\]*)*'/,
     comment: ($) => /\{[^\}]*\}/,
   },
 });

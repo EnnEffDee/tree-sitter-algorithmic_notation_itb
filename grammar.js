@@ -339,6 +339,7 @@ export default grammar({
       choice(
         $.identifier,
         prec.left(5, seq($.variable_access, ".", $.identifier)),
+        prec.left(5, seq($.variable_access, "->.", $.identifier)),
         prec.left(5, seq($.variable_access, "[", $.expression, "]")),
       ),
 

@@ -1,9 +1,0 @@
-PROGRAM this is my program hahaha
-{ Specification: prints "Hello, world!" and a number }
-
-KAMUS
-s : integer
-
-ALGORITMA UTAMA
-input(s)
-output("Hello, world!", s)

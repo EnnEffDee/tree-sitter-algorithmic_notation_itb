@@ -1970,6 +1970,27 @@
               },
               {
                 "type": "STRING",
+                "value": "->."
+              },
+              {
+                "type": "SYMBOL",
+                "name": "identifier"
+              }
+            ]
+          }
+        },
+        {
+          "type": "PREC_LEFT",
+          "value": 5,
+          "content": {
+            "type": "SEQ",
+            "members": [
+              {
+                "type": "SYMBOL",
+                "name": "variable_access"
+              },
+              {
+                "type": "STRING",
                 "value": "["
               },
               {
